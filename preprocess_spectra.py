@@ -57,10 +57,10 @@ def norm_spectrum(spec):
     :return:
     """
     spec_norm = numpy.nanmedian(spec)
-    if spec_norm >= 1:
-        spec = (spec / spec_norm)
-    else:
-        spec = spec + (1 - spec_norm)
+    #if spec_norm >= 1:
+    spec = (spec / spec_norm)
+    #else:
+    #    spec = spec + (1 - spec_norm)
 
     return spec
 

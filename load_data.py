@@ -170,5 +170,5 @@ def near_max_spectra_matrix(SN_df, SN_spec_df):
 
 
 
-    return X_SG, CW, sn_name, sn_spec_idx, sn_spec_time 
+    return X_SG, CW, sn_name, sn_spec_idx, sn_spec_time
 
