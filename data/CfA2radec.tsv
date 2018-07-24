@@ -1,0 +1,83 @@
+#
+#   VizieR Astronomical Server vizier.cfa.harvard.edu
+#    Date: 2018-07-23T13:22:45 [V1.99+ (14-Oct-2013)]
+#   In case of problem, please report to:	cds-question@unistra.fr
+#
+#
+#Coosys	J2000:	eq_FK5 J2000
+#INFO	votable-version=1.99+ (14-Oct-2013)	
+#INFO	-ref=VIZ5b55d67d19b86	
+#INFO	-out.max=unlimited	
+#INFO	queryParameters=13	
+#-oc.form=dec
+#-out.max=unlimited
+#-order=I
+#-out.src=J/AJ/131/527/sn
+#-nav=cat:J/AJ/131/527&tab:{J/AJ/131/527/sn}&key:source=J/AJ/131/527/sn&HTTPPRM:&&-ref=VIZ5b55d67d19b86&-out.max=50&-out.form=HTML Table&-oc.form=sexa&-c.eq=J2000&-c.r=  2&-c.u=arcmin&-c.geom=r&-order=I&-out=SN&-out=RAJ2000&-out=DEJ2000&-ignore=LightCurve=*&LightCurve=LightCurve&SNcat=SNcat&Simbad=Simbad&NED=NED&-file=.&-meta.ucd=2&-meta=1&-meta.foot=1&-usenav=1&-bmark=POST&-out.src=J/AJ/131/527/sn
+#-c.eq=J2000
+#-c.r=  2
+#-c.u=arcmin
+#-c.geom=r
+#-source=J/AJ/131/527/sn
+#-out=SN
+#-out=RAJ2000
+#-out=DEJ2000
+#
+
+#RESOURCE=yCat_51310527
+#Name: J/AJ/131/527
+#Title: UBVRI light curves of 44 type Ia supernovae (Jha+, 2006)
+#Table	J_AJ_131_527_sn:
+#Name: J/AJ/131/527/sn
+#Title: Supernova position
+#Column	SN	(a6)	Supernova identification	[ucd=meta.id;meta.main]
+#Column	RAJ2000	(A11)	Hour of Right Ascension (J2000)	[ucd=pos.eq.ra;meta.main]
+#Column	DEJ2000	(A11)	Degree of Declination (J2000)	[ucd=pos.eq.dec;meta.main]
+SN	RAJ2000	DEJ2000
+ 	"h:m:s"	"d:m:s"
+------	-----------	-----------
+1997E 	06 47 38.16	+74 29 51.0
+1997Y 	12 45 31.46	+54 44 17.4
+1997bp	12 46 53.78	-11 38 33.2
+1997bq	10 17 05.48	+73 23 01.5
+1997br	13 20 42.38	-22 02 12.7
+1997cn	14 09 57.74	+17 32 32.2
+1997cw	00 25 17.26	+12 53 06.4
+1997dg	23 40 14.28	+26 12 11.2
+1997do	07 26 42.59	+47 05 34.6
+1997dt	23 00 02.97	+15 58 50.4
+1998D 	14 02 59.33	+34 44 54.6
+1998V 	18 22 37.40	+15 42 08.0
+1998ab	12 48 47.28	+41 55 29.0
+1998bp	17 54 50.73	+18 19 50.2
+1998co	21 47 36.27	-13 10 52.7
+1998de	00 48 06.88	+27 37 29.9
+1998dh	23 14 40.31	+04 32 13.4
+1998dk	00 14 32.26	-00 44 12.6
+1998dm	01 26 13.64	-06 06 13.7
+1998dx	18 11 11.95	+49 51 40.9
+1998ec	06 53 06.10	+50 02 22.8
+1998ef	01 03 26.80	+32 14 12.8
+1998eg	22 39 30.34	+08 36 20.8
+1998es	01 37 17.52	+05 52 50.2
+1999X 	08 54 32.28	+36 30 41.7
+1999aa	08 27 42.15	+21 29 15.6
+1999ac	16 07 15.05	+07 58 20.1
+1999cc	16 02 42.04	+37 21 33.7
+1999cl	12 31 56.03	+14 25 35.1
+1999cw	00 20 01.46	-06 20 02.5
+1999dq	02 33 59.71	+20 58 30.2
+1999ef	00 58 46.39	+12 44 45.2
+1999ej	01 22 57.38	+33 27 57.4
+1999ek	05 36 31.55	+16 38 17.1
+1999gd	08 38 24.57	+25 45 33.8
+1999gh	09 44 19.73	-21 16 25.3
+1999gp	02 31 39.08	+39 22 52.4
+2000B 	07 05 40.49	+50 35 12.3
+2000ce	08 05 09.40	+66 47 16.2
+2000cf	15 52 56.33	+65 56 13.2
+2000cn	17 57 40.47	+27 49 58.0
+2000cx	01 24 46.15	+09 30 31.1
+2000dk	01 07 23.53	+32 24 23.4
+2000fa	07 15 29.87	+23 25 42.4
+
