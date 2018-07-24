@@ -3,8 +3,42 @@ import os
 import numpy
 from collections import Counter
 import preprocess_spectra
-
 import matplotlib
+
+def load_lc_df():
+    lc_df_CfA3 = pandas.read_csv('data/CfA3.tsv', skiprows=77, sep='\t')
+    lc_df_CfA3 = lc_df_CfA3.drop(0)
+    lc_df_CfA3 = lc_df_CfA3.drop(1)
+    lc_df_CfA3 = lc_df_CfA3.set_index('SN')
+    lc_df_CfA3.assign(source='CfA3')
+
+    lc_df_CfA2 = pandas.read_excel('data/CfA2.xlsx')
+    lc_df_CfA2 = lc_df_CfA2.set_index('SN')
+    lc_df_CfA2['SN'] = lc_df_CfA2.index
+    lc_df_CfA2['SN'] = lc_df_CfA2['SN'].str.rstrip('.')
+    lc_df_CfA2.set_index('SN')
+    lc = lc_df_CfA2['Δm15(B)'].str.split('±', expand=True)
+    lc = lc.rename(index=str, columns={0: "Δm15(B)", 1: "dΔm15(B)"})
+    lc_df_CfA2 = lc_df_CfA2.drop(['Δm15(B)'], axis=1)
+    lc_df_CfA2_temp = pandas.concat([lc_df_CfA2, lc], axis=1, sort=False)
+
+    lc_df_CfA2_rd = pandas.read_csv('data/CfA2radec.tsv', skiprows=35, sep='\t')
+    lc_df_CfA2_rd = lc_df_CfA2_rd.drop(0)
+    lc_df_CfA2_rd = lc_df_CfA2_rd.drop(1)
+    lc_df_CfA2_rd = lc_df_CfA2_rd.set_index('SN')
+
+    lc_df_CfA2_final = pandas.concat([lc_df_CfA2_temp, lc_df_CfA2_rd], axis=1, sort=False)
+    lc_df_CfA2_final.assign(source='CfA2')
+
+    #lc_df_CfA1 = pandas.read_csv('data/CfA1.tsv', skiprows=52, sep='\t')
+    #lc_df_CfA1 = lc_df_CfA1.drop(0)
+    #lc_df_CfA1 = lc_df_CfA1.drop(1)
+    #lc_df_CfA1 = lc_df_CfA1.set_index('SN')
+
+    lc_df = pandas.concat([lc_df_CfA3, lc_df_CfA2_final], axis=1, sort=False)
+
+    return lc_df
+
 def load_SN_spec_df():
     sn_df = pandas.read_csv('data/cfaspec_snIa/cfasnIa_param.dat', skiprows=42,sep='\s+')
     sn_df = sn_df.drop(0)
