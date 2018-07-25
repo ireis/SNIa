@@ -9,14 +9,15 @@ def load_lc_df():
     lc_df_CfA3 = pandas.read_csv('data/CfA3.tsv', skiprows=77, sep='\t')
     lc_df_CfA3 = lc_df_CfA3.drop(0)
     lc_df_CfA3 = lc_df_CfA3.drop(1)
+    lc_df_CfA3['SN'] = lc_df_CfA3['SN'].str.rstrip(' ')
     lc_df_CfA3 = lc_df_CfA3.set_index('SN')
-    lc_df_CfA3.assign(source='CfA3')
+    lc_df_CfA3 = lc_df_CfA3.assign(source='CfA3')
 
     lc_df_CfA2 = pandas.read_excel('data/CfA2.xlsx')
     lc_df_CfA2 = lc_df_CfA2.set_index('SN')
     lc_df_CfA2['SN'] = lc_df_CfA2.index
     lc_df_CfA2['SN'] = lc_df_CfA2['SN'].str.rstrip('.')
-    lc_df_CfA2.set_index('SN')
+    lc_df_CfA2 = lc_df_CfA2.set_index('SN')
     lc = lc_df_CfA2['Δm15(B)'].str.split('±', expand=True)
     lc = lc.rename(index=str, columns={0: "Δm15(B)", 1: "dΔm15(B)"})
     lc_df_CfA2 = lc_df_CfA2.drop(['Δm15(B)'], axis=1)
@@ -25,10 +26,11 @@ def load_lc_df():
     lc_df_CfA2_rd = pandas.read_csv('data/CfA2radec.tsv', skiprows=35, sep='\t')
     lc_df_CfA2_rd = lc_df_CfA2_rd.drop(0)
     lc_df_CfA2_rd = lc_df_CfA2_rd.drop(1)
+    lc_df_CfA2_rd['SN'] = lc_df_CfA2_rd['SN'].str.rstrip(' ')
     lc_df_CfA2_rd = lc_df_CfA2_rd.set_index('SN')
 
     lc_df_CfA2_final = pandas.concat([lc_df_CfA2_temp, lc_df_CfA2_rd], axis=1, sort=False)
-    lc_df_CfA2_final.assign(source='CfA2')
+    lc_df_CfA2_final=lc_df_CfA2_final.assign(source='CfA2')
 
     #lc_df_CfA1 = pandas.read_csv('data/CfA1.tsv', skiprows=52, sep='\t')
     #lc_df_CfA1 = lc_df_CfA1.drop(0)
@@ -37,7 +39,30 @@ def load_lc_df():
 
     lc_df = pandas.concat([lc_df_CfA3, lc_df_CfA2_final], axis=1, sort=False)
 
-    return lc_df
+    return lc_df, lc_df_CfA2_final, lc_df_CfA3
+
+def set_nan_to_cells(your_df,column):     # change all cells that are not floats to numpy nan (float) - send header as string!
+    for n in your_df.index:
+        try:
+            float(your_df[column].loc[n])
+        except:
+            your_df.loc[n,column] = numpy.nan
+
+    return your_df
+
+def create_lc_param_df(your_df,column_cfa3,column_cfa2): #send headers as strings!
+    B_mag = []
+    B_src = []
+    for n in your_df.index:
+        if not numpy.isnan(float(your_df.loc[n,column_cfa3])):
+            B_mag.append(float(your_df.loc[n,column_cfa3])) #first take from CfA3
+            B_src.append('CfA3')
+        else:
+            B_mag.append(float(your_df.loc[n,column_cfa2]))
+            B_src.append('CfA2')
+    lc_param = pandas.DataFrame(numpy.column_stack([your_df.index, B_mag, B_src]),
+                                columns=['SN', 'B_mag', 'B_src'])
+    return lc_param
 
 def load_SN_spec_df():
     sn_df = pandas.read_csv('data/cfaspec_snIa/cfasnIa_param.dat', skiprows=42,sep='\s+')
