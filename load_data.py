@@ -50,7 +50,7 @@ def set_nan_to_cells(your_df,column):     # change all cells that are not floats
 
     return your_df
 
-def create_lc_param_df(your_df,column_cfa3,column_cfa2): #send headers as strings!
+def create_lc_param_df(your_df,column_cfa3,column_cfa2,header): #send headers as strings!
     B_mag = []
     B_src = []
     for n in your_df.index:
@@ -61,7 +61,7 @@ def create_lc_param_df(your_df,column_cfa3,column_cfa2): #send headers as string
             B_mag.append(float(your_df.loc[n,column_cfa2]))
             B_src.append('CfA2')
     lc_param = pandas.DataFrame(numpy.column_stack([your_df.index, B_mag, B_src]),
-                                columns=['SN', 'B_mag', 'B_src'])
+                                columns=['SN', header, 'src'])
     return lc_param
 
 def load_SN_spec_df():
