@@ -4,6 +4,8 @@ import numpy
 from collections import Counter
 import preprocess_spectra
 import matplotlib
+from astropy.cosmology import WMAP9 as cosmo
+import astropy.units as u
 
 def load_lc_df():
     lc_df_CfA3 = pandas.read_csv('data/CfA3.tsv', skiprows=77, sep='\t')
@@ -41,18 +43,23 @@ def load_lc_df():
 
     return lc_df, lc_df_CfA2_final, lc_df_CfA3
 
-def set_nan_to_cells(your_df,column):     # change all cells that are not floats to numpy nan (float) - send header as string!
-    for n in your_df.index:
-        try:
-            float(your_df[column].loc[n])
-        except:
-            your_df.loc[n,column] = numpy.nan
+def set_nan_to_cells(your_df, exception):     # change all cells that are not floats to numpy nan (float) - send header as string!
+    for column in your_df.columns:
+        test = 0
+        for m in exception:
+            if column is m:
+                test = 1
+        if test == 0:
+            for l in your_df.index:
+                try:
+                    your_df.loc[l,column] = float(your_df[column].loc[l])  ##itamar shouls we worry abput int? + change to a loop on all columns
+                except:
+                    your_df.loc[l,column] = numpy.nan
 
     return your_df
 
-def create_lc_param_df(your_df,column_cfa3,column_cfa2,header): #send headers as strings!
-    B_mag = []
-    B_src = []
+"""
+def create_lc_param_table(df_list,columns_to_merge,headers_for_columns): #send headers as strings!
     for n in your_df.index:
         if not numpy.isnan(float(your_df.loc[n,column_cfa3])):
             B_mag.append(float(your_df.loc[n,column_cfa3])) #first take from CfA3
@@ -60,9 +67,25 @@ def create_lc_param_df(your_df,column_cfa3,column_cfa2,header): #send headers as
         else:
             B_mag.append(float(your_df.loc[n,column_cfa2]))
             B_src.append('CfA2')
-    lc_param = pandas.DataFrame(numpy.column_stack([your_df.index, B_mag, B_src]),
-                                columns=['SN', header, 'src'])
+
     return lc_param
+"""
+
+def get_intrinsic_mag(sn_name, Z, B, AB):
+    MB = pandas.DataFrame(index=sn_name, columns=['MB'])
+    MB_arr = numpy.zeros(len(sn_name))
+    for i, n in enumerate(sn_name):
+        try:
+            mb = B.loc[n]
+            d = cosmo.luminosity_distance(Z.loc[n]) #
+            ab = AB.loc[n]
+            mu = 5*numpy.log10(d/(10 * u.pc))
+            MB_arr[i] = mb - mu - ab
+        except:
+            MB_arr[i] = numpy.nan
+    MB['MB'] = MB_arr
+    return MB#Mpandas.DataFrame(index=sn_name, data=MB)
+
 
 def load_SN_spec_df():
     sn_df = pandas.read_csv('data/cfaspec_snIa/cfasnIa_param.dat', skiprows=42,sep='\s+')
