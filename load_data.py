@@ -272,8 +272,7 @@ def get_vanilla_spectra_matrix(file_name_list, sn_spec_idx):
 def pp_spectra_mat(SN_df, sn_name, spec_len, W, X, dX):
 
     nof_objects = X.shape[0]
-    E_bv = numpy.zeros(nof_objects)
-    print('FIXME: No E(B-V), using zeros')
+    E_bv = preprocess_spectra.E_bv_get_all(SN_df.loc[sn_name])
     W, X = preprocess_spectra.clean_and_deredd_spectra(W, X, dX, E_bv)
 
     redshift = SN_df['zhel'].loc[sn_name].values
@@ -296,7 +295,7 @@ def pp_spectra_mat(SN_df, sn_name, spec_len, W, X, dX):
     X_SG, CW = preprocess_spectra.impute_spec(X_SG, common_wave)
 
 
-    return X_SG, CW
+    return X_SG, CW, E_bv
 
 
 def near_max_spectra_matrix(SN_df, SN_spec_df):
@@ -311,11 +310,11 @@ def near_max_spectra_matrix(SN_df, SN_spec_df):
     file_name_list = SN_spec_df['#Filename'].values
     W, X, dX, spec_len = get_vanilla_spectra_matrix(file_name_list, sn_spec_idx)
 
-    X_SG, CW = pp_spectra_mat(SN_df, sn_name, spec_len, W, X, dX)
+    X_SG, CW, E_bv = pp_spectra_mat(SN_df, sn_name, spec_len, W, X, dX)
 
 
 
-    return X_SG, CW, sn_name, sn_spec_idx, sn_spec_time
+    return X_SG, CW, sn_name, sn_spec_idx, sn_spec_time, E_bv
 
 
 def full_spectra_matrix(SN_df, SN_spec_df):

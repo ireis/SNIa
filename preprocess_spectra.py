@@ -5,7 +5,10 @@ from scipy import signal
 
 import sfdmap
 global m
-m = sfdmap.SFDMap('dustmap/')
+m = sfdmap.SFDMap('sfddata-master/')
+
+#wget https://github.com/kbarbary/sfddata/archive/master.tar.gz
+#tar xzf master.tar.gz
 
 
 
@@ -158,7 +161,7 @@ def de_redshift(wave, z):
     wave = wave / (1 + z)
     return wave
 
-def E_bv_get(object_id):
+def E_bv_get(ra, dec):
     """
     E_bv for a single object
     :param m:
@@ -166,22 +169,31 @@ def E_bv_get(object_id):
     :return:
     """
 
-    ra = float(object_id[8])
-    dec = float(object_id[9])
+
     E_bv = m.ebv(ra, dec)
 
     return E_bv
 
-def E_bv_get_all(objects_ids_list):
+def E_bv_get_all(SN_df):
     """
     Get the E_bv value for each object in objects_ids_list
     The data is from the sfdmap package
     :param objects_ids_list:
     :return E_bv:
     """
-    E_bv = numpy.zeros(len(objects_ids_list))
+    nof_objects = SN_df.shape[0]
+    sn_names = SN_df.index
+    ra_arr = SN_df['RA'].values
+    dec_arr = SN_df['DEC'].values
+    E_bv = numpy.zeros(nof_objects)
 
-    for i, object_id in enumerate(objects_ids_list):
-        E_bv[i] = E_bv_get(object_id)
+    for i in range(nof_objects):
+        ra = ra_arr[i]
+        dec = dec_arr[i]
+        if (ra != 0) and (dec != 0):
+            E_bv[i] = E_bv_get(ra, dec)
+        else:
+            print('Warning: no coordinates (so no MW E(B-V)) for SN', sn_names[i])
+
 
     return E_bv
