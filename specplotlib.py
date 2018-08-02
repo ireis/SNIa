@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 from matplotlib.cm import get_cmap
 cmap = get_cmap('viridis_r')
 
+line_names = ['Si II', 'C II']
+line_w =     [6355,  6580]
+
 def reorder_spectra_mat(spectra_matrix, indecies_to_plot, order_by):
     nof_objects = len(indecies_to_plot)
     if len(order_by) > nof_objects:
@@ -14,7 +17,7 @@ def reorder_spectra_mat(spectra_matrix, indecies_to_plot, order_by):
     return plot_matrix
 
 
-def sequencer_plot_smooth(spectra_matrix, indecies_to_plot, order_by, smooth=10):
+def sequencer_plot_smooth(CW, spectra_matrix, indecies_to_plot, order_by, smooth=10):
     plot_matrix = reorder_spectra_mat(spectra_matrix.copy(), indecies_to_plot, order_by)
     nof_objects = len(indecies_to_plot)
 
@@ -25,13 +28,19 @@ def sequencer_plot_smooth(spectra_matrix, indecies_to_plot, order_by, smooth=10)
     plt.imshow(plot_matrix[:i], aspect='auto', vmin=0.5, vmax=2, cmap='BrBG')
     plt.colorbar()
     # plt.xlim([228,581])
+    #plt.xticks(numpy.array([numpy.argmax(CW > 1216),
+    #                        numpy.argmax(CW > 1400),
+    #                        numpy.argmax(CW > 1549),
+    ##                        numpy.argmax(CW > 1909)]),
+    #           ['Lya, NV', 'SiIV, OIV]', 'CIV', 'CIII]'],
+    #           fontsize=15)
     plt.show()
 
     return plot_matrix[:i]
 
 
 
-def ladder_plot_smooth(spectra_matrix, indecies_to_plot, order_by, nof_spectra, delta=1):
+def ladder_plot_smooth(CW, spectra_matrix, indecies_to_plot, order_by, nof_spectra, delta=1):
     plot_matrix = reorder_spectra_mat(spectra_matrix.copy(), indecies_to_plot, order_by)
 
     n_groups = nof_spectra
@@ -41,6 +50,9 @@ def ladder_plot_smooth(spectra_matrix, indecies_to_plot, order_by, nof_spectra, 
     for g_idx, g in enumerate(groups):
         d = delta * g_idx
         x_plt = numpy.nanmedian(g, axis=0)
-        plt.plot(x_plt + d, c=cmap(g_idx / n_groups))
+        plt.plot(CW, x_plt + d, c=cmap(g_idx / n_groups))
+    plt.axvline(x = 6143.68)
+    plt.axvline(x = 4869.66)
+    plt.axvline(x = 4308.88)
     plt.show()
     return

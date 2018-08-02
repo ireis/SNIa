@@ -3,9 +3,50 @@ import os
 import numpy
 from collections import Counter
 import preprocess_spectra
-import matplotlib
+from astroquery.simbad import Simbad
+from astropy import units as u
+from astropy.coordinates import SkyCoord
 from astropy.cosmology import WMAP9 as cosmo
-import astropy.units as u
+import time
+
+
+def get_ra_dec(SN_df):
+
+    nof_objects = SN_df.shape[0]
+    ra_arr = numpy.zeros(nof_objects)
+    dec_arr = numpy.zeros(nof_objects)
+
+
+    for idx, name in enumerate(SN_df.index):
+        if ra_arr[idx] == 0:
+            try:
+                sn = 'sn' + name
+                result_table = Simbad.query_object(sn)
+                ra, dec = result_table['RA'], result_table['DEC']
+                c = SkyCoord(ra = ra[0], dec = dec[0],unit=(u.hourangle, u.deg), frame='icrs')
+                ra, dec = c.ra.value, c.dec.value
+            except:
+                try:
+                    # Sometimes even SIMBAD needs a rest
+                    print('Sleeping', sn)
+                    time.sleep(180)
+                    result_table = Simbad.query_object(sn)
+                    ra, dec = result_table['RA'], result_table['DEC']
+                    c = SkyCoord(ra = ra[0], dec = dec[0],unit=(u.hourangle, u.deg), frame='icrs')
+                    ra, dec = c.ra.value, c.dec.value
+                except:
+                    break
+            ra_arr[idx] = ra
+            dec_arr[idx] = dec
+
+
+    SN_ra_dec = pandas.DataFrame(index=SN_df.index)
+    SN_ra_dec['RA'] = ra_arr
+    SN_ra_dec['DEC'] = dec_arr
+    SN_ra_dec.to_csv('SN_ra_dec.csv')
+    print('saved SN_ra_dec.csv')
+
+    return SN_ra_dec
 
 def load_lc_df():
     lc_df_CfA3 = pandas.read_csv('data/CfA3.tsv', skiprows=77, sep='\t')
@@ -147,7 +188,28 @@ def load_single_spectrum(filename):
         #print(w.shape, w.min(), w.max())
     return w,s,ds
 
+def all_spectra_idxs(SN_df, SN_spec_df):
+    """
+    Returns indices of the most close to peak spectra, for SN with spectra within 5 days from peak light
 
+    :return:
+    """
+    sn_name_all = []
+    spec_idx_list_use = []
+    t = []
+    for sn_idx, sn in enumerate(SN_df.index):
+        snname = 'sn' + sn
+        sn_spec_idx = SN_spec_df[SN_spec_df['SN_name'] == snname].index
+
+        for i in sn_spec_idx:
+            t += [SN_spec_df['t_from_peak'].loc[i]]
+            spec_idx_list_use += [i]
+            sn_name_all += [sn]
+
+    spec_idx_list_use = numpy.array(spec_idx_list_use).astype(int)
+
+
+    return spec_idx_list_use, sn_name_all, t
 
 
 def near_max_spectra_idxs(SN_df, SN_spec_df):
@@ -214,14 +276,15 @@ def pp_spectra_mat(SN_df, sn_name, spec_len, W, X, dX):
     print('FIXME: No E(B-V), using zeros')
     W, X = preprocess_spectra.clean_and_deredd_spectra(W, X, dX, E_bv)
 
-    redshift = SN_df['zhel'].loc[sn_name]
+    redshift = SN_df['zhel'].loc[sn_name].values
 
     W_z = numpy.zeros(W.shape)
     for i in range(nof_objects):
         W_z[i] = preprocess_spectra.de_redshift(W[i], redshift[i])
 
     print('FIXME(?): using hard coded wavelength grid')
-    idx = 1
+
+    idx = numpy.argmin(abs(spec_len - numpy.nanmedian(spec_len)))
     common_wave = W_z[idx, :spec_len[idx]]
 
     X_NORM = numpy.zeros(X.shape)
@@ -253,4 +316,23 @@ def near_max_spectra_matrix(SN_df, SN_spec_df):
 
 
     return X_SG, CW, sn_name, sn_spec_idx, sn_spec_time
+
+
+def full_spectra_matrix(SN_df, SN_spec_df):
+    """
+    Returns a matrix with processed spectra that is ready for use
+    Only for SN with most close to peak spectra, for SN with spectra within 5 days from peak light
+    :return:
+    """
+    sn_spec_idx, sn_name, time_from_peak  = all_spectra_idxs(SN_df, SN_spec_df)
+    #nof_objects = spec_idx_list_use[spec_idx_list_use > 0].shape[0]
+
+    file_name_list = SN_spec_df['#Filename'].values
+    W, X, dX, spec_len = get_vanilla_spectra_matrix(file_name_list, sn_spec_idx)
+
+    X_SG, CW = pp_spectra_mat(SN_df, sn_name, spec_len, W, X, dX)
+
+
+
+    return X_SG, CW, sn_name, sn_spec_idx, time_from_peak
 
