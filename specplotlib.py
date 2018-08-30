@@ -44,7 +44,7 @@ def ladder_plot_smooth(CW, spectra_matrix, indecies_to_plot, order_by, nof_spect
     plot_matrix = reorder_spectra_mat(spectra_matrix.copy(), indecies_to_plot, order_by)
 
     n_groups = nof_spectra
-    l = int(len(order_by) / n_groups) * n_groups
+    l = int(len(indecies_to_plot) / n_groups) * n_groups
     groups = numpy.split(plot_matrix[:l], n_groups)
     plt.figure(figsize=(10, 10))
     for g_idx, g in enumerate(groups):

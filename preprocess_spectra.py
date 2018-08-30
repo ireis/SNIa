@@ -1,7 +1,7 @@
 from scipy.interpolate import interp1d
 import numpy
 from sklearn.preprocessing import Imputer
-from scipy import signal
+from  scipy import signal
 
 import sfdmap
 global m

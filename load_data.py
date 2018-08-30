@@ -228,7 +228,7 @@ def near_max_spectra_idxs(SN_df, SN_spec_df):
             t = SN_spec_df['t_from_peak'].loc[i]
             tmin = 10
 
-            if ((t > -5) & (t < 5)):
+            if ((t > -7) & (t < 7)):
                 if abs(t) < tmin:
                     spec_idx_list_use[sn_idx] = i
     spec_idx_list_use = spec_idx_list_use.astype(int)
