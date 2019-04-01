@@ -69,16 +69,16 @@ def embedding_plot_groups(embed, SN_df):
     plt.subplot(211)
     plt.title("BClass" )
 
-    inds = numpy.where(SN_df['BClass'] == 'CN')
+    inds = numpy.where(SN_df['BClass_spec'] == 'CN')
     plt.scatter(x[inds], y[inds], marker='*', label = 'CN')
 
-    inds = numpy.where(SN_df['BClass'] == 'CL')
+    inds = numpy.where(SN_df['BClass_spec'] == 'CL')
     plt.scatter(x[inds], y[inds], s= 50, marker='s', label = 'CL')
 
-    inds = numpy.where(SN_df['BClass'] == 'BL')
+    inds = numpy.where(SN_df['BClass_spec'] == 'BL')
     plt.scatter(x[inds], y[inds], label = 'BL')
 
-    inds = numpy.where(SN_df['BClass'] == 'SS')
+    inds = numpy.where(SN_df['BClass_spec'] == 'SS')
     plt.scatter(x[inds], y[inds], marker='^', label = 'SS')
     #plt.scatter(x, y, c = t)
 
@@ -89,16 +89,16 @@ def embedding_plot_groups(embed, SN_df):
     plt.title("WClass" )
 
     plt.scatter(x, y, color = 'gray', s = 10)
-    inds = numpy.where(SN_df['WClass'] == 'N')
+    inds = numpy.where(SN_df['WClass_spec'] == 'N')
     plt.scatter(x[inds], y[inds], s= 50, marker='*', label = 'N')
 
-    inds = numpy.where(SN_df['WClass'] == '91bg')
+    inds = numpy.where(SN_df['WClass_spec'] == '91bg')
     plt.scatter(x[inds], y[inds], marker='s', label = '91bg')
 
-    inds = numpy.where(SN_df['WClass'] == 'HV')
+    inds = numpy.where(SN_df['WClass_spec'] == 'HV')
     plt.scatter(x[inds], y[inds], label = 'HV')
 
-    inds = numpy.where(SN_df['WClass'] == '91T')
+    inds = numpy.where(SN_df['WClass_spec'] == '91T')
     plt.scatter(x[inds], y[inds], marker='^', label = '91T')
 
 
@@ -110,7 +110,7 @@ def embedding_plot_groups(embed, SN_df):
     return
 
 
-def embedding_plot_spec_meas(embed, SN_DF):
+def embedding_plot_spec_meas(embed, SN_DF, s=50):
     x = embed[:, 0]
     y = embed[:, 1]
 
@@ -118,11 +118,11 @@ def embedding_plot_spec_meas(embed, SN_DF):
     plt.subplot(311)
     plt.title("v6355" )
 
-    plt.scatter(x, y, color = 'gray', s = 10)
+    plt.scatter(x, y, color = 'gray', s = s)
     #plt.scatter(x[iax_in_df_idx], y[iax_in_df_idx], color ='orange', s= 200, marker='*')
     #plt.scatter(x, y, c = t)
-    t = (SN_DF['EW5972'].values).copy() / (SN_DF['EW6355'].values).copy()
-    t = SN_DF['v6355'].copy()
+    t = (SN_DF['EW5972_spec'].values).copy() / (SN_DF['EW6355_spec'].values).copy()
+    t = SN_DF['v6355_spec'].copy()
     cut = -8000
     t[t > cut] = cut
     plt.scatter(x, y, c = t)
@@ -133,10 +133,10 @@ def embedding_plot_spec_meas(embed, SN_DF):
     plt.subplot(312)
     plt.title("EW5972" )
 
-    plt.scatter(x, y, color = 'gray', s = 10)
+    plt.scatter(x, y, color = 'gray', s = s)
     #plt.scatter(x[iax_in_df_idx], y[iax_in_df_idx], color ='orange', s= 200, marker='*')
     #plt.scatter(x, y, c = t)
-    t = SN_DF['EW5972'].values.copy()
+    t = SN_DF['EW5972_spec'].values.copy()
     cut = -8000
     #t[t > cut] = cut
     plt.scatter(x, y, c = t)
@@ -146,10 +146,10 @@ def embedding_plot_spec_meas(embed, SN_DF):
 
     plt.subplot(313)
     plt.title("EW6355" )
-    plt.scatter(x, y, color = 'gray', s = 10)
+    plt.scatter(x, y, color = 'gray', s = s)
     #plt.scatter(x[iax_in_df_idx], y[iax_in_df_idx], color ='orange', s= 200, marker='*')
     #plt.scatter(x, y, c = t)
-    t =  (SN_DF['EW6355'].values).copy()
+    t =  (SN_DF['EW6355_spec'].values).copy()
     cut = -8000
     #t[t > cut] = cut
     plt.scatter(x, y, c = t)
@@ -172,7 +172,7 @@ def embedding_plot_lc_params(embed, SN_DF):
     plt.title("Intrinsic M" )
 
     plt.scatter(x, y, color = 'gray', s = 10)
-    t = (SN_DF['M_B'].values).copy()
+    t = (SN_DF['M_B_spec'].values).copy()
     cut = -80
     t[t < cut] = numpy.nan
     plt.scatter(x, y, c = t)
@@ -186,7 +186,7 @@ def embedding_plot_lc_params(embed, SN_DF):
     plt.scatter(x, y, color = 'gray', s = 10)
     #plt.scatter(x[iax_in_df_idx], y[iax_in_df_idx], color ='orange', s= 200, marker='*')
     #plt.scatter(x, y, c = t)
-    t = SN_DF['Dm15'].values.copy()
+    t = SN_DF['Dm15_spec'].values.copy()
     cut = 3
     t[t > cut] = numpy.nan
     plt.scatter(x, y, c = t, cmap = 'Spectral')
@@ -199,7 +199,7 @@ def embedding_plot_lc_params(embed, SN_DF):
     plt.scatter(x, y, color = 'gray', s = 10)
     #plt.scatter(x[iax_in_df_idx], y[iax_in_df_idx], color ='orange', s= 200, marker='*')
     #plt.scatter(x, y, c = t)
-    t = SN_DF['c'].values.copy()
+    t = SN_DF['B-V_spec'].values.copy()
     #cut = 3
     #t[t > cut] = numpy.nan
     plt.scatter(x, y, c = t, cmap = 'plasma')
@@ -222,7 +222,7 @@ def embedding_plot_salt2_lc_params(embed, SN_DF):
     plt.title("Intrinsic M" )
 
     plt.scatter(x, y, color = 'gray', s = 10)
-    t = (SN_DF['m_B'].values).copy() - (SN_DF['mu'].values).copy()
+    t = (SN_DF['m_B_salt2'].values).copy() - (SN_DF['mu'].values).copy()
     cut = -80
     t[t < cut] = numpy.nan
     plt.scatter(x, y, c = t)
@@ -236,7 +236,7 @@ def embedding_plot_salt2_lc_params(embed, SN_DF):
     plt.scatter(x, y, color = 'gray', s = 10)
     #plt.scatter(x[iax_in_df_idx], y[iax_in_df_idx], color ='orange', s= 200, marker='*')
     #plt.scatter(x, y, c = t)
-    t = SN_DF['x_1'].values.copy()
+    t = SN_DF['x_1_salt2'].values.copy()
     #cut = 3
     #t[t > cut] = numpy.nan
     plt.scatter(x, y, c = t, cmap = 'Spectral')
@@ -249,7 +249,7 @@ def embedding_plot_salt2_lc_params(embed, SN_DF):
     plt.scatter(x, y, color = 'gray', s = 10)
     #plt.scatter(x[iax_in_df_idx], y[iax_in_df_idx], color ='orange', s= 200, marker='*')
     #plt.scatter(x, y, c = t)
-    t = SN_DF['c'].values.copy()
+    t = SN_DF['c_salt2'].values.copy()
     #cut = 3
     #t[t > cut] = numpy.nan
     plt.scatter(x, y, c = t, cmap = 'plasma')
@@ -261,6 +261,56 @@ def embedding_plot_salt2_lc_params(embed, SN_DF):
 
     return
 
+
+def embedding_plot_salt_lc_params(embed, SN_DF, s = 50):
+    x = embed[:, 0]
+    y = embed[:, 1]
+
+    plt.figure(figsize=(10,15))
+
+
+    plt.subplot(311)
+    plt.title("Intrinsic M" )
+
+    plt.scatter(x, y, color = 'gray', s = 10)
+    t = (SN_DF['m_B_salt'].values).copy() - (SN_DF['mu_salt'].values).copy()
+    cut = -80
+    t[t < cut] = numpy.nan
+    plt.scatter(x, y, c = t, s = s)
+    #plt.gca().invert_yaxis()
+    plt.colorbar()
+    #plt.colorbar()
+
+    plt.subplot(312)
+    plt.title("s_salt" )
+
+    plt.scatter(x, y, color = 'gray', s = 10)
+    #plt.scatter(x[iax_in_df_idx], y[iax_in_df_idx], color ='orange', s= 200, marker='*')
+    #plt.scatter(x, y, c = t)
+    t = SN_DF['s_salt'].values.copy()
+    #cut = 3
+    #t[t > cut] = numpy.nan
+    plt.scatter(x, y, c = t, cmap = 'Spectral', s = s)
+    plt.colorbar()
+
+
+    plt.subplot(313)
+    plt.title("c_salt" )
+
+    plt.scatter(x, y, color = 'gray', s = 10)
+    #plt.scatter(x[iax_in_df_idx], y[iax_in_df_idx], color ='orange', s= 200, marker='*')
+    #plt.scatter(x, y, c = t)
+    t = SN_DF['c_salt'].values.copy()
+    #cut = 3
+    #t[t > cut] = numpy.nan
+    plt.scatter(x, y, c = t, cmap = 'plasma', s = s)
+    plt.colorbar()
+
+
+    plt.tight_layout()
+    plt.show()
+
+    return
 
 def umap_param_scan(X):
 
