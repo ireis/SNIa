@@ -222,14 +222,15 @@ def near_max_spectra_idxs(SN_df, SN_spec_df):
     for sn_idx, sn in enumerate(SN_df.index):
         snname = 'sn' + sn
         sn_spec_idx = SN_spec_df[SN_spec_df['SN_name'] == snname].index
-
+        tmin = 10
         for i in sn_spec_idx:
 
             t = SN_spec_df['t_from_peak'].loc[i]
-            tmin = 10
+
 
             if ((t > -7) & (t < 7)):
                 if abs(t) < tmin:
+                    tmin = abs(t)
                     spec_idx_list_use[sn_idx] = i
     spec_idx_list_use = spec_idx_list_use.astype(int)
 
@@ -244,6 +245,35 @@ def near_max_spectra_idxs(SN_df, SN_spec_df):
 
     return spec_idx_list_use, sn_name, sn_spec_idx, sn_spec_time
 
+
+
+def all_near_max_spectra_idxs(SN_df, SN_spec_df):
+    """
+    Returns indices of the most close to peak spectra, for SN with spectra within 5 days from peak light
+
+    :return:
+    """
+    sn_name = []
+    sn_spec_idx = []
+    sn_spec_idx_use = []
+    sn_spec_time = []
+
+    spec_idx_list_use = numpy.ones(SN_df.shape[0]) * (-1)
+    for sn_idx, sn in enumerate(SN_df.index):
+        snname = 'sn' + sn
+        sn_spec_idx = SN_spec_df[SN_spec_df['SN_name'] == snname].index
+        for i in sn_spec_idx:
+
+            t = SN_spec_df['t_from_peak'].loc[i]
+
+            if ((t > -7) & (t < 7)):
+                sn_name += [sn]
+                sn_spec_time += [t]
+                sn_spec_idx_use += [i]
+
+    return sn_name, sn_spec_idx_use, sn_spec_time
+
+
 def get_vanilla_spectra_matrix(file_name_list, sn_spec_idx):
 
     nof_objects = len(sn_spec_idx)
@@ -252,6 +282,7 @@ def get_vanilla_spectra_matrix(file_name_list, sn_spec_idx):
     s_list = []
     ds_list = []
     for idx in sn_spec_idx:
+        #print(idx, file_name_list[idx] )
         w, s, ds = load_single_spectrum(file_name_list[idx], )
         w_list += [w]
         s_list += [s]
@@ -316,6 +347,24 @@ def near_max_spectra_matrix(SN_df, SN_spec_df):
 
     return X_SG, CW, sn_name, sn_spec_idx, sn_spec_time, E_bv
 
+def all_near_max_spectra_matrix(SN_df, SN_spec_df):
+    """
+    Returns a matrix with processed spectra that is ready for use
+    Only for SN with most close to peak spectra, for SN with spectra within 5 days from peak light
+    :return:
+    """
+    sn_name, sn_spec_idx, sn_spec_time = all_near_max_spectra_idxs(SN_df, SN_spec_df)
+    #nof_objects = spec_idx_list_use[spec_idx_list_use > 0].shape[0]
+
+    file_name_list = SN_spec_df['#Filename'].values
+    W, X, dX, spec_len = get_vanilla_spectra_matrix(file_name_list, sn_spec_idx)
+
+    X_SG, CW, E_bv = pp_spectra_mat(SN_df, sn_name, spec_len, W, X, dX)
+
+
+
+    return X_SG, CW, sn_name, sn_spec_idx, sn_spec_time, E_bv
+
 
 def full_spectra_matrix(SN_df, SN_spec_df):
     """
@@ -334,4 +383,3 @@ def full_spectra_matrix(SN_df, SN_spec_df):
 
 
     return X_SG, CW, sn_name, sn_spec_idx, time_from_peak
-
