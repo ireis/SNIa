@@ -312,7 +312,7 @@ def embedding_plot_salt_lc_params(embed, SN_DF, s = 50):
 
     return
 
-def umap_param_scan(X):
+def umap_param_scan(X, metric = 'euclidian'):
 
     prep_list = [3, 5, 10, 25] #how many "nearest neighbors" to consider
     learning_rate = [0.01, 0.1, 0.25, 0.5] #which gap to take between calculations of minima (resolution)
@@ -323,8 +323,9 @@ def umap_param_scan(X):
     count = 1
     for prep_val in tqdm(prep_list):
         for learn_val in learning_rate:
-            t_umap = umap.UMAP(n_neighbors=prep_val,
+            t_umap = umap.UMAP(n_neighbors=prep_val, metric=metric,
                           min_dist=learn_val).fit_transform(X)
+
             x = t_umap[:, 0]
             y = t_umap[:, 1]
             plt.subplot(4, 4, count)
