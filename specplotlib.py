@@ -211,6 +211,56 @@ def embedding_plot_lc_params(embed, SN_DF):
 
     return
 
+def embedding_plot_lc_params(embed, SN_DF):
+    x = embed[:, 0]
+    y = embed[:, 1]
+
+    plt.figure(figsize=(10,15))
+
+
+    plt.subplot(311)
+    plt.title("Intrinsic M" )
+
+    plt.scatter(x, y, color = 'gray', s = 10)
+    t = (SN_DF['M_B_spec'].values).copy()
+    cut = -80
+    t[t < cut] = numpy.nan
+    plt.scatter(x, y, c = t)
+    #plt.gca().invert_yaxis()
+    plt.colorbar()
+    #plt.colorbar()
+
+    plt.subplot(312)
+    plt.title("DM15" )
+
+    plt.scatter(x, y, color = 'gray', s = 10)
+    #plt.scatter(x[iax_in_df_idx], y[iax_in_df_idx], color ='orange', s= 200, marker='*')
+    #plt.scatter(x, y, c = t)
+    t = SN_DF['Dm15_spec'].values.copy()
+    cut = 3
+    t[t > cut] = numpy.nan
+    plt.scatter(x, y, c = t, cmap = 'Spectral')
+    plt.colorbar()
+
+
+    plt.subplot(313)
+    plt.title("Color" )
+
+    plt.scatter(x, y, color = 'gray', s = 10)
+    #plt.scatter(x[iax_in_df_idx], y[iax_in_df_idx], color ='orange', s= 200, marker='*')
+    #plt.scatter(x, y, c = t)
+    t = SN_DF['B-V_spec'].values.copy()
+    #cut = 3
+    #t[t > cut] = numpy.nan
+    plt.scatter(x, y, c = t, cmap = 'plasma')
+    plt.colorbar()
+
+
+    plt.tight_layout()
+    plt.show()
+
+    return
+
 def embedding_plot_salt2_lc_params(embed, SN_DF):
     x = embed[:, 0]
     y = embed[:, 1]
@@ -261,50 +311,53 @@ def embedding_plot_salt2_lc_params(embed, SN_DF):
 
     return
 
+def get_title(fitter = 'SALT'):
+    if fitter == 'SALT':
+        ttl = r'$M_{B} = M + \alpha \times (s-1) - \beta \times c$'
+    elif fitter == 'MLCS':
+        ttl = r'$M_{B} = M + \alpha \times \Delta + \beta \times A_{v}$'
+    else:
+        ttl = ''
+    return ttl
 
-def embedding_plot_salt_lc_params(embed, SN_DF, s = 50):
+def embedding_plot_fit_params(embed, m0, alpha, beta, s = 50, fitter='SALT'):
     x = embed[:, 0]
     y = embed[:, 1]
 
     plt.figure(figsize=(10,15))
 
+    ttl = get_title(fitter)
+
+
 
     plt.subplot(311)
-    plt.title("Intrinsic M" )
+    plt.title(ttl + r' --- $\alpha$', fontsize = 20 )
 
     plt.scatter(x, y, color = 'gray', s = 10)
-    t = (SN_DF['m_B_salt'].values).copy() - (SN_DF['mu_salt'].values).copy()
-    cut = -80
-    t[t < cut] = numpy.nan
-    plt.scatter(x, y, c = t, s = s)
-    #plt.gca().invert_yaxis()
+
+    t = alpha
+    plt.scatter(x, y, c = t, cmap = 'coolwarm', s = s)
     plt.colorbar()
-    #plt.colorbar()
+
 
     plt.subplot(312)
-    plt.title("s_salt" )
+    plt.title(ttl + r' --- $\beta$', fontsize = 20 )
 
     plt.scatter(x, y, color = 'gray', s = 10)
-    #plt.scatter(x[iax_in_df_idx], y[iax_in_df_idx], color ='orange', s= 200, marker='*')
-    #plt.scatter(x, y, c = t)
-    t = SN_DF['s_salt'].values.copy()
-    #cut = 3
-    #t[t > cut] = numpy.nan
+    t = beta
     plt.scatter(x, y, c = t, cmap = 'Spectral', s = s)
     plt.colorbar()
 
-
     plt.subplot(313)
-    plt.title("c_salt" )
+    plt.title(ttl + " --- M", fontsize = 20)
 
     plt.scatter(x, y, color = 'gray', s = 10)
-    #plt.scatter(x[iax_in_df_idx], y[iax_in_df_idx], color ='orange', s= 200, marker='*')
-    #plt.scatter(x, y, c = t)
-    t = SN_DF['c_salt'].values.copy()
-    #cut = 3
-    #t[t > cut] = numpy.nan
-    plt.scatter(x, y, c = t, cmap = 'plasma', s = s)
+    t = (m0).copy()
+    cut = -80
+    t[t < cut] = numpy.nan
+    plt.scatter(x, y, c = t, s = s, cmap = 'viridis_r')
     plt.colorbar()
+
 
 
     plt.tight_layout()
