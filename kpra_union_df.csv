@@ -1,4 +1,4 @@
-,idx_kpr,file_kpr,phase_kpr,low_wl_kpr,high_wl_kpr,snr_kpr,src_kpr,z_uni,m_b_uni,m_b_err_uni,s_uni,s_err_uni,c_uni,c_err_uni,mu_uni,mu_err_uni,sn_name
+,idx_kpr,file_kpr,phase_kpr,low_wl_kpr,high_wl_kpr,snr_kpr,src_kpr,z_uni,m_b_uni,m_b_err_uni,s_uni,s_err_uni,c_uni,c_err_uni,mu_uni,mu_err_uni,sn_kpr
 1980n,1006,sn1980n-19801211.724-iue.flm,-1.798441350830381,1928.0,3178.0,1.8545015694418048,uv,,,,,,,,,,1980n
 1980n,1007,sn1980n-19801213.495-iue.flm,0.18988518408314192,1918.0,3190.0,1.8133415795473595,uv,,,,,,,,,,1980n
 1980n,1008,sn1980n-19801216.147-iue.flm,3.1723749864534265,1926.0,3202.0,1.2276583981439089,uv,,,,,,,,,,1980n
