@@ -387,7 +387,7 @@ def umap_param_scan(X, metric = 'euclidean', save=False,c = None):
                 uc = uc[numpy.isfinite(uc)]
                 for uc_ in uc:
                     inds = numpy.where(c == uc_)[0]
-                    plt.scatter(x[inds], y[inds], s=20)
+                    plt.scatter(x[inds], y[inds], s=50)
             plt.axis('off')
             if save:
                 numpy.save('umap_{}_{}'.format(prep_val, learn_val), t_umap)
@@ -477,5 +477,84 @@ def embedding_plot_time_params(s_umap,  m0, ss):
     plt.tight_layout()
     plt.show()
     
+    return
+
+################################################################################################################
+############################################# kpra funcs 
+
+def kpr_color_by_c_param(t_umap, title, c_param, low_prec=5, high_prec=95, s=30):
+    x = t_umap[:, 0]
+    y = t_umap[:, 1]
+
+    plt.figure(figsize=(11,8))
+    plt.title(title)
+    plt.scatter(x, y, color = 'gray', s = s)
+    
+    c_ = c_param.copy()
+    low_cut = numpy.nanpercentile(c_, q=low_prec)
+    high_cut = numpy.nanpercentile(c_, q=high_prec)
+    isfin = numpy.isfinite(c_)
+    c_isfin = c_[isfin]
+    c_isfin[c_isfin < low_cut] = low_cut
+    c_isfin[c_isfin > high_cut] = high_cut
+    #print(low_cut, high_cut)
+    c_[isfin] = c_isfin
+    #print(c_)
+    
+    plt.scatter(x, y, c = c_)
+    plt.colorbar()
+
+    plt.show()
+
+    return
+
+def kpr_color_by_groups(t_umap, Bclass, Wclass):
+    x = t_umap[:, 0]
+    y = t_umap[:, 1]
+
+    plt.figure(figsize=(7,12))
+
+    plt.subplot(211)
+    plt.title("BClass" )
+    plt.scatter(x, y, color = 'gray', s = 10)
+    
+    inds = numpy.where(Bclass == bytes('CN', 'utf-8'))[0]
+    plt.scatter(x[inds], y[inds], s= 100, marker='*', label = 'CN')
+
+    inds = numpy.where(Bclass == bytes('CL', 'utf-8'))[0]
+    plt.scatter(x[inds], y[inds], s= 100, marker='s', label = 'CL')
+
+    inds = numpy.where(Bclass == bytes('BL', 'utf-8'))[0]
+    plt.scatter(x[inds], y[inds], s= 100, label = 'BL')
+
+    inds = numpy.where(Bclass == bytes('SS', 'utf-8'))[0]
+    plt.scatter(x[inds], y[inds], s= 100, marker='^', label = 'SS')
+    #plt.scatter(x, y, c = t)
+
+    plt.legend()
+
+
+    plt.subplot(212)
+    plt.title("WClass" )
+    plt.scatter(x, y, color = 'gray', s = 10)
+    
+    inds = numpy.where(Wclass == bytes('N', 'utf-8'))
+    plt.scatter(x[inds], y[inds], s= 100, marker='*', label = 'N')
+    
+    inds = numpy.where(Wclass == bytes('91bg', 'utf-8'))
+    plt.scatter(x[inds], y[inds], s= 100, label = '91bg')
+    
+    inds = numpy.where(Wclass == bytes('HV', 'utf-8'))
+    plt.scatter(x[inds], y[inds], s= 100, marker='s', label = 'HV')
+
+    inds = numpy.where(Wclass == bytes('91T', 'utf-8'))
+    plt.scatter(x[inds], y[inds], s= 100, marker='^', label = '91T')
+    #plt.scatter(x, y, c = t)
+
+    plt.legend()
+
+    plt.tight_layout()
+    plt.show()
+
     return
 
